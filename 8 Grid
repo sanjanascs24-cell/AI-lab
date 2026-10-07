@@ -1,0 +1,95 @@
+# Iterative Deepening DFS for Puzzle Grid
+
+def get_neighbors(grid, row, col):
+    rows = len(grid)
+    cols = len(grid[0])
+
+    # Up, Down, Left, Right
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+    neighbors = []
+
+    for dr, dc in directions:
+        nr = row + dr
+        nc = col + dc
+
+        if 0 <= nr < rows and 0 <= nc < cols:
+            if grid[nr][nc] != 1:   # 1 means blocked
+                neighbors.append((nr, nc))
+
+    return neighbors
+
+
+def depth_limited_search(grid, current, goal, limit, path):
+    # Goal found
+    if current == goal:
+        return path
+
+    # Depth limit reached
+    if limit == 0:
+        return None
+
+    for neighbor in get_neighbors(grid, current[0], current[1]):
+
+        # Avoid revisiting cells in current path
+        if neighbor not in path:
+
+            result = depth_limited_search(
+                grid,
+                neighbor,
+                goal,
+                limit - 1,
+                path + [neighbor]
+            )
+
+            if result is not None:
+                return result
+
+    return None
+
+
+def iddfs(grid, start, goal):
+    max_depth = len(grid) * len(grid[0])
+
+    for depth in range(max_depth + 1):
+
+        result = depth_limited_search(
+            grid,
+            start,
+            goal,
+            depth,
+            [start]
+        )
+
+        if result is not None:
+            return result, depth
+
+    return None, -1
+
+
+# -------------------------------
+# Main Program
+# -------------------------------
+
+grid = [
+    [0, 0, 1, 0, 0],
+    [1, 0, 1, 0, 0],
+    [0, 0, 0, 0, 1],
+    [0, 1, 1, 0, 0],
+    [0, 0, 0, 0, 0]
+]
+
+start = (0, 0)
+goal = (4, 4)
+
+path, depth = iddfs(grid, start, goal)
+
+if path is not None:
+    print("Goal found!")
+    print("Depth:", depth)
+    print("Path:")
+
+    for position in path:
+        print(position)
+else:
+    print("Goal cannot be reached.")
