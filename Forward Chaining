@@ -1,0 +1,44 @@
+# Forward Chaining Algorithm
+
+# Initial facts
+facts = {
+    "American(Robert)",
+    "Enemy(A,America)",
+    "Missile(M1)",
+    "Owns(A,M1)",
+    "Sells(Robert,M1,A)"
+}
+
+print("Initial Facts:")
+for fact in facts:
+    print(fact)
+
+# Forward Chaining Rules
+# Rule 1: Enemy -> Hostile
+# Rule 2: Missile -> Weapon
+# Rule 3: American + Sells + Weapon + Hostile -> Criminal
+
+# Apply Rule 1
+if "Enemy(A,America)" in facts:
+    facts.add("Hostile(A)")
+    print("\nNew Fact: Hostile(A)")
+
+# Apply Rule 2
+if "Missile(M1)" in facts:
+    facts.add("Weapon(M1)")
+    print("New Fact: Weapon(M1)")
+
+# Apply Rule 3
+if ("American(Robert)" in facts and
+    "Sells(Robert,M1,A)" in facts and
+    "Weapon(M1)" in facts and
+    "Hostile(A)" in facts):
+
+    facts.add("Criminal(Robert)")
+    print("New Fact: Criminal(Robert)")
+
+# Final Result
+if "Criminal(Robert)" in facts:
+    print("\nConclusion: Robert is a Criminal.")
+else:
+    print("\nConclusion: Cannot prove Robert is a Criminal.")
